@@ -1,0 +1,47 @@
+<% include ../partials/header %>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/public/jquery.js"></script>
+<div>
+<b> Play Room <%= roomid %></b>
+<div id="player1"></div>
+<div id="player2_join"></div>
+</div>
+</p>
+
+<script type="text/javascript">
+var socket = io();
+
+let count = 0
+$(document).ready(()=>{
+    var time =  setInterval(function(){
+      count++;
+      document.getElementById('count').textContent =count;
+    },1000);
+
+    $.ajax({
+      url: "/room/player1",
+      type: "GET",
+      success: function(data) {
+        $('#player1').html(data);
+     }
+    });
+
+    socket.on('DisplayP2', ()=>{
+      $.ajax({
+        url: "/room/player2_join.ejs",
+        type: "POST",
+        success: function(data) {
+          $('#player2_join').html(data);
+          clearInterval(time);
+          count = 0;
+          document.getElementById('count').textContent = '';
+       }
+     });
+    });
+});
+socket.on('ToGameScreen', ()=>{
+    window.location.href = "/?start=1";
+});
+</script>
+<h3 id="count"></h3>
+<% include ../partials/footer %>

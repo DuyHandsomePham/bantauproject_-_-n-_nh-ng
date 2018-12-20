@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML
+ 1.1//EN" "http://www.w3.org/TR/xhtml11/
+ DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/
+ xhtml" xml:lang="en">
+<head>
+<title>asd</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/public/css/1.css" type="text/css" media="screen,projection" />
+</head>
+<body>
+    <div id="wrapper">
+
+    <div id="header">
+    <p class="description">
+      <% if (logged) { %>
+        Logged in: <%= logged %> _ <a href="/logout.ejs">log out</a>
+    <% } %>
+    </p>
+    <h1><a href="/">BATTLESHIP</a></h1>
+    <hr/>
+    <ul id="nav">
+    <li><a href="/login">Login</a></li>
+    <li><a href="/register">Register</a></li>
+    <!--user has logged in-->
+    <% if (logged) {%>
+    <li><a href="/map">Map</a></li>
+    <li><a href="/?device=1">Device</a></li>
+    <li><a href="/room/index">Room</a></li>
+    <% } %>
+    </ul>
+    </div><!-- header -->
+
+    <div id="sidebar">
+    <h2>Role of game:</h2>
+    <h3><p class="news">First, logs in to create a map in profile section.<br/>
+        Go to play, create or join a room and play
+    <br />- <em> ADMIN </em>-</p></h3>
+    <h2>Introduction</h2>
+    <h3><p class="news">On this battlefield man has no better weapon than his intelligent,
+            no other force but his heart<br />- <em>Jose Rizal</em></p></h3>
+    <p></p>
+    </div><!-- sidebar -->
+
+    <div id="content">
+<!-- BEGIN CHANGEABLE CONTENT. -->

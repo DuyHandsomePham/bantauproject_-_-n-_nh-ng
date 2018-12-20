@@ -1,0 +1,60 @@
+<% include partials/header %>
+<script type="text/javascript" src="/public/jquery.js"></script>
+
+<% include partials/info %>
+<div id="info"></div>
+<form id="add" action="add.ejs" method="post">
+    <p>
+    X: <select id="x" name="x">
+        <script>
+          for(i = 1; i < 9; i++) {
+              document.write('<option>'+i+'</option>');
+          }
+        </script>
+    </select>
+    Y: <select id="y" name="y"><script>
+         for(i = 1; i < 9; i++) {
+             document.write('<option>'+i+'</option>');
+        }
+        </script>
+    </select></p>
+    <button type="submit">ADD</button><p/>
+</form>
+<div id="map"></div>
+<p/>
+<input id="delete" type="button" value="DELETE"></input>
+
+<script type="text/javascript">
+  $(document).ready(()=>{
+      $.post('display.ejs', {init:1}, (data)=>{
+          $('#map').html(data);
+      });
+      //add new location
+      $('#add').submit((event)=>{
+         event.preventDefault();
+         var x = $('#x').val();
+         var y = $('#y').val();
+         $.post('add.ejs', {x: x, y: y}, (data)=>{
+           $('#info').html(data);
+           $.post('display.ejs', {}, (data1)=>{
+               $('#map').html(data1);
+           });
+         });
+      });
+      //delete map
+      $('#delete').click((event)=>{
+        event.preventDefault();
+        var a = $.ajax({
+          url: "delete.ejs",
+          type: "POST",
+          success: function(data) {
+              $('#info').html(data);
+              $.post('display.ejs', {}, (data1)=>{
+                  $('#map').html(data1);
+              });
+          }
+        });
+      });
+  });
+</script>
+<% include partials/footer %>

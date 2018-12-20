@@ -1,0 +1,15 @@
+<% include partials/header %>
+<h2 style="color:blue">Login: </h2><p/>
+<% if (fail) {%>
+<h3 style="color:red">Your username or password is not correct!</h3>
+<% } if (!logged) { %>
+<form action="" method="post">
+  <input type="text" name="username" placeholder="Your username"/><p/>
+  <input type="password" name="password" placeholder="Your password"/><p/>
+  <input type="submit" name="login" value="Login"/>
+</form>
+<% }
+else { %>
+  <h3>You have logged in as: <%= logged %> </h3>
+<% } %>
+<% include partials/footer %>

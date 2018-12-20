@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML
+ 1.1//EN" "http://www.w3.org/TR/xhtml11/
+ DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/
+ xhtml" xml:lang="en">
+<head>
+<title>Game</title>
+<link rel="stylesheet" type="text/css" href="designlayout.css"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/public/css/designlayout.css" type="text/css" media="screen,projection" />
+<script type="text/javascript" src="/public/jquery.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <script type="text/javascript">
+  var socket = io();
+  var count = 20;
+  var dev_name = <%=dev%>;
+  var roomid = <%= roomid %>;
+  var turn = <%=turn%>, ptr, player1 = <%=player1%>;
+  var map, ex_ptr = {x:1,y:1};;
+  if (player1 == 1) {
+      map = 2;
+  }
+  else map = 1;
+  $(document).ready(()=>{
+    if (turn == 1) {
+        ptr = {x:1,y:1};
+        document.getElementById('turn').innerHTML = '<h3 style="color:red">YOUR TURN</h3>';
+    }
+    else {
+      ptr = {x:'a',y:'a'};
+      document.getElementById('turn').innerHTML = '<h3 style="color:red">ENEMY TURN</h3>';
+    }
+
+    socket.emit('JoinIO', roomid);
+     $.ajax({
+         url: "/game/game.ejs",
+         type: "GET",
+         cache: false,
+         data: {map1:1,pointer:ptr},
+         success: function(html){
+            $("#map1").html(html);
+        }
+     });
+     $.ajax({
+         url: "/game/game.ejs",
+         type: "GET",
+         cache: false,
+         data: {pointer:ptr},
+         success: function(html){
+            $("#map2").html(html);
+        }
+     });
+
+
+    socket.on('playerMove', function(data) {
+      if (data.dev == dev_name && ptr.x != 'a') {
+        switch(data.dir) {
+           case 'A':
+              if (ptr.x != 1) ptr.x -= 1;
+              break;
+           case 'W':
+              if (ptr.y != 1) ptr.y -= 1;
+              break;
+           case 'D':
+              if (ptr.x != 8) ptr.x++;
+              break;
+           case 'S':
+              if (ptr.y != 8) ptr.y += 1;
+              break;
+           default:
+         }
+         $.ajax({
+             url: "/game/action",
+             type: "GET",
+             cache: false,
+             data: {pointer:ptr},
+             success: function(html){
+                $("#map2").html(html);
+                ex_ptr = ptr;
+            }
+         });
+       }
+        /*$.ajax({
+            url: "/game/action",
+            type: "GET",
+            cache: false,
+            data: {dev:data0.dev,dir:data0.dir},
+            success: function(html){
+               $("#map2").html(html);
+           }
+        });*/
+     });
+
+     socket.on('playerFire', function(data){
+       if (data == dev_name && ptr.x != 'a') {
+         $.ajax({
+             url: "/game/action",
+             type: "GET",
+             cache: false,
+             data: {fire:1,pointer:ptr,map:map},
+             success: function(html) {
+                $("#map2").html(html);
+            }
+         }).done(function(){
+           $.ajax({
+               url: "/game/score",
+               type: "GET",
+               cache: false,
+               data: {},
+               success: function(html){
+                  $("#MyScore").html(html);
+                  socket.emit('MyTurnEnd');
+                }
+           });
+         });
+       }
+     });
+
+     socket.on('UpdateYourTurn', (data)=>{
+          if (ptr.x == 'a') {
+              ptr = ex_ptr;
+              document.getElementById('turn').innerHTML = '<h3 style="color:red">YOUR TURN</h3>';
+          }
+          else {
+              ptr ={x:'a',y:'a'};
+              if (data.end == 0) {
+                  document.getElementById('turn').innerHTML = '<h3 style="color:red">ENEMY TURN</h3>';
+              }
+              else document.getElementById('turn').innerHTML = '';
+          }
+          socket.emit('MapUpdate');
+     });
+
+     socket.on('Map',(data)=>{
+        if (ptr.x != 'a') {
+           $.ajax({
+               url: "/game/action",
+               type: "GET",
+               cache: false,
+               data: {toggle:1,pointer:ptr,turn:turn},
+               success: function(html) {
+                  if (data.end == 0) {
+                     $("#map2").html(html);
+                  }
+                  else {
+                    delete ptr;
+                    document.getElementById('turn').innerHTML = '';
+                    document.getElementById('result').innerHTML = '<h1 style="color:cyan">YOU LOSE</h1>';
+                  }
+              }
+           }).done(function(){
+             $.ajax({
+                 url: "/game/game.ejs",
+                 type: "GET",
+                 cache: false,
+                 data: {map1:1,updateMap1:1,pointer:data.pointer},
+                 success: function(html2){
+                    $("#map1").html(html2);
+                }
+             });
+           });
+         }
+     });
+});
+</script>
+
+<div id="name_game">
+<h1>BATLESHIP</h1>
+</div>
+
+<div id="box1">
+<h3 style="color:white">YOUR MAP</h3>
+<div id="map1"></div>
+</div>
+
+<div id="box2">
+<h3 style="color:white">ENEMY MAP</h3>
+<div id="map2"></div>
+</div>
+
+<div id="intro">
+  <div id="MyScore"></div>
+  <div id="result"></div>
+  <div id="turn"></div>
+  <h3 style="color:yellow"><div id="CountDown"></div></h3>
+  <form action="/room/delete.ejs" method="post">
+      <input type="submit" name="return" value="Return to main page"/>
+  </form>
+</div>
+</body>
+</html>

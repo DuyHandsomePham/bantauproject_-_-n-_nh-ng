@@ -1,0 +1,78 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	text-align: center;
+	background-image: url('tau.jpg');
+}
+/*Khoi ten game*/
+#name_game
+{
+	font-size:20px;
+	height:50px;
+	width:100%;
+	color:#3F0;
+	text-shadow:#CCC;
+
+
+
+}
+
+#box1
+{
+	width:500px;
+	text-align:center;
+	float:left;
+
+
+
+	}
+/*Bang 1*/
+
+
+#mymap
+{
+
+	color:#F00;
+
+}
+
+#my_table
+{
+
+	background-image:url(https://ak6.picdn.net/shutterstock/videos/5684786/thumb/1.jpg);
+
+	margin-top:10px;
+	margin-left:50px;
+
+}
+#cot{
+
+	margin-top:10px;
+	}
+
+/*Bang 2*/
+
+#box2
+{
+	width:500px;
+	text-align:center;
+	float:right;
+
+
+
+
+
+}
+#enemy_table
+{
+    background-image:url(https://ak6.picdn.net/shutterstock/videos/5684786/thumb/1.jpg);
+	margin-top:10px;
+	margin-left:50px;
+
+
+}
+#intro
+{
+  width:100%;
+}

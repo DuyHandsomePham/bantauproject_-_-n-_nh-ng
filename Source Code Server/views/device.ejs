@@ -1,0 +1,30 @@
+<% include partials/header %>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/public/jquery.js"></script>
+<script type="text/javascript">
+var socket = io();
+$(document).ready(function(){
+  //call ajax first
+  /*$.post('/device.ejs', {}, (data)=>{
+     $('#device').html(data);
+  });*/
+  // update device list
+  $.ajax({
+      url: "/device.ejs",
+      type: "POST",
+      cache: false,
+      success: function(html){
+         $("#device").html(html);
+     }
+  });
+    socket.on('NewDevice', ()=>{
+      $.post('/device.ejs', {}, (data)=>{
+         $('#device').html(data);
+      });
+    });
+});
+</script>
+<% include partials/info %>
+</p>
+<div id="device"></div>
+<% include partials/footer %>

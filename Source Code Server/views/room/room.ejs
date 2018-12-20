@@ -1,0 +1,19 @@
+<% include ../partials/header %>
+<style>.boxed{border: 1px solid green;}</style>
+<script type="text/javascript" src="/public/jquery.js"></script>
+<% include ../partials/info %>
+<form action="/room/create.ejs" method="get">
+<input id="create" type="submit" name="room" value="CREATE ROOM" />
+</form>
+</p>
+<script type="text/javascript">
+    $(document).ready(()=>{
+      setInterval(function(){
+        $.post('list_room.ejs', {}, (data)=>{
+           $('#list_room').html(data);
+        });
+      }, 5000);
+    });
+</script>
+<div id="list_room"></div>
+<% include ../partials/footer %>
